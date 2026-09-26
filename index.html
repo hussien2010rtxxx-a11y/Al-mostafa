@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>علوة الفواكه والخضروات</title>
+    <style>
+        :root {
+            --primary-color: #2ecc71;
+            --secondary-color: #27ae60;
+            --dark-color: #2c3e50;
+            --light-bg: #f9f9f9;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-color);
+        }
+        /* شريط التنقل */
+        nav {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav h1 {
+            font-size: 24px;
+        }
+        .cart-icon {
+            background: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* الأقسام */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+        }
+        .category-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        /* شبكة المنتجات */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 50px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 20px;
+            text-align: center;
+        }
+        .product-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+            background: #eee;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .order-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .order-controls input {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .add-to-cart {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .add-to-cart:hover {
+            background: var(--secondary-color);
+        }
+        /* سلة التسوق (نافذة منبثقة) */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .cart-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .close-cart {
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+        .whatsapp-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #25D366;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+        .whatsapp-btn:hover {
+            background: #128C7E;
+        }
+        @media (max-width: 768px) {
+            nav, .products-grid { padding: 15px; }
+            .categories { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <h1>🛒 علوة الفواكه والخضروات</h1>
+        <div class="cart-icon" onclick="toggleCart()">
+            <span>السلة</span>
+            <span id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <div class="categories">
+        <button class="category-btn active">الكل</button>
+        <button class="category-btn">فواكه</button>
+        <button class="category-btn">خضروات</button>
+        <button class="category-btn">ورقيات</button>
+    </div>
+
+    <main class="products-grid" id="products-container">
+        <!-- سيتم إضافة المنتجات هنا عن طريق الجافاسكريبت -->
+    </main>
+
+    <!-- نافذة السلة -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h2>سلة طلباتك</h2>
+                <span class="close-cart" onclick="toggleCart()">&times;</span>
+            </div>
+            <div id="cart-items">
+                <!-- المنتجات المضافة تظهر هنا -->
+            </div>
+            <button class="whatsapp-btn" onclick="sendToWhatsapp()">ارسال الطلب عبر واتساب 💬</button>
+        </div>
+    </div>
+
+    <script>
+        // بيانات المنتجات
+        const products = [
+            { id: 1, name: "تفاح أحمر", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6faa6?w=500&q=80", category: "فواكه" },
+            { id: 2, name: "برتقال", img: "https://images.unsplash.com/photo-1549888834-3ec93abae044?w=500&q=80", category: "فواكه" },
+            { id: 3, name: "موز", img: "https://images.unsplash.com/photo-1571501478200-a5d087963ef6?w=500&q=80", category: "فواكه" },
+            { id: 4, name: "عنب", img: "https://images.unsplash.com/photo-1596386461350-326ccb383e9f?w=500&q=80", category: "فواكه" },
+            { id: 5, name: "طماطم", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&q=80", category: "خضروات" },
+            { id: 6, name: "خيار", img: "https://images.unsplash.com/photo-1604977042946-1eecc30f269e?w=500&q=80", category: "خضروات" }
+        ];
+
+        let cart = [];
+        const whatsappNumber = "9647821050835"; // تم تحويل الصفر إلى مفتاح العراق 964
+
+        // عرض المنتجات في الصفحة
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-price">الأسعار: يتم إضافتها في ما بعد</div>
+                        <div class="order-controls">
+                            <label>الكمية:</label>
+                            <input type="number" id="qty-${product.id}" value="1" min="1" step="0.5">
+                            <label>كيلو</label>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id}, '${product.name}')">أضف للسلة</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // إضافة للسلة
+        function addToCart(id, name) {
+            const qty = document.getElementById(`qty-${id}`).value;
+            
+            // التحقق إذا كان المنتج موجود مسبقاً
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.qty = parseFloat(existingItem.qty) + parseFloat(qty);
+            } else {
+                cart.push({ id, name, qty });
+            }
+            
+            updateCartUI();
+            alert(`تم إضافة ${qty} كيلو من ${name} إلى السلة!`);
+        }
+
+        // تحديث واجهة السلة
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const cartContainer = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p style="text-align:center; color:#777;">السلة فارغة حالياً</p>';
+                return;
+            }
+
+            cartContainer.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            الكمية: ${item.qty} كيلو
+                        </div>
+                        <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;">حذف</button>
+                    </div>
+                `;
+            });
+        }
+
+        // حذف من السلة
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // فتح وإغلاق السلة
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // إرسال الطلب للواتساب
+        function sendToWhatsapp() {
+            if (cart.length === 0) {
+                alert("السلة فارغة! الرجاء إضافة منتجات أولاً.");
+                return;
+            }
+
+            let message = "مرحباً، أود تقديم طلب جديد من العلوة:\n\n";
+            cart.forEach(item => {
+                message += `🔹 ${item.name} - الكمية: ${item.qty} كيلو\n`;
+            });
+            message += "\n(الأسعار: يتم إضافتها في ما بعد حسب الاتفاق)";
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            
+            window.open(whatsappURL, '_blank');
+            cart = []; // تفريغ السلة بعد الطلب
+            updateCartUI();
+            toggleCart();
+        }
+
+        // تشغيل الدالة عند تحميل الصفحة
+        renderProducts();
+        updateCartUI();
+    </script>
+</body>
+</html>
